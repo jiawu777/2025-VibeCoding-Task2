@@ -9,6 +9,7 @@
     <style>
         /* ================================================= */
         /* 八、CSS 區塊插槽規則：全站基底樣式 (CSS:BASE) */
+        /* 修正 RWD 確保 320px 無水平捲動 */
         /* ================================================= */
         /* CSS:BASE-START */
         :root {
@@ -20,6 +21,7 @@
             --color-secondary-bg: #1c2733; /* 區塊次背景 */
             --color-border: #004d77; /* 邊框/分隔線顏色 */
 
+            --spacing-xs: 0.5rem; /* 新增極小間距，用於手機版內距 */
             --spacing-sm: 1rem;
             --spacing-md: 2rem;
             --spacing-lg: 4rem;
@@ -40,6 +42,8 @@
             line-height: 1.6; /* 舒適行距 */
             -webkit-font-smoothing: antialiased;
             min-height: 100vh;
+            /* 修正RWD：防止 320px 下因 padding 或其他元素溢出導致水平捲動 */
+            overflow-x: hidden; 
         }
 
         /* 元素選擇器：圖片 */
@@ -76,13 +80,13 @@
         }
 
         .container {
-            /* 內容最大寬度與左右 padding */
+            /* RWD修正：在手機版將左右 padding 設置為更小的間距 (0.5rem) */
             width: 100%;
-            max-width: 1440px; /* 依照 RWD 規格 */
+            max-width: 1440px; 
             margin-left: auto;
             margin-right: auto;
-            padding-left: var(--spacing-sm);
-            padding-right: var(--spacing-sm);
+            padding-left: var(--spacing-xs); /* 320px 適用 */
+            padding-right: var(--spacing-xs); /* 320px 適用 */
         }
 
         /* 類別選擇器：區塊共用樣式 */
@@ -130,14 +134,17 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.75rem var(--spacing-sm);
+            /* RWD修正：nav 容器的 padding 也要使用較小間距 */
+            padding: 0.75rem var(--spacing-xs); 
         }
 
         .nav-logo {
             font-size: 1.25rem;
             font-weight: bold;
             color: var(--color-text-light);
-            white-space: nowrap; /* 確保 logo 在手機上不換行 */
+            white-space: nowrap; 
+            /* RWD修正：防止 Logo 與連結在 320px 下擠壓太緊 */
+            margin-right: var(--spacing-xs); 
         }
 
         .nav-links {
@@ -145,13 +152,16 @@
             padding: 0;
             margin: 0;
             display: flex;
-            gap: 1rem;
+            /* RWD修正：在極小螢幕下，導覽連結間距縮小 */
+            gap: 0.5rem; 
         }
 
         .nav-link {
             color: var(--color-text);
-            padding: 0.5rem 0.25rem;
+            /* RWD修正：導覽連結 padding 縮小 */
+            padding: 0.5rem 0.25rem; 
             font-weight: 500;
+            font-size: 0.875rem; /* 320px 時字體略小 */
         }
 
         .nav-link:hover {
@@ -166,7 +176,8 @@
         footer {
             /* 底部版權資訊 */
             background-color: var(--color-secondary-bg);
-            padding: var(--spacing-sm) 0;
+            /* RWD修正：footer 內距使用較小間距 */
+            padding: var(--spacing-sm) var(--spacing-xs); 
             text-align: center;
             font-size: 0.875rem;
             border-top: 1px solid var(--color-border);
@@ -194,20 +205,20 @@
         }
 
         .hero-title {
-            font-size: 2.5rem;
+            font-size: 2.25rem; /* RWD調整: 320px H1 略小 */
             margin-top: 0;
             margin-bottom: var(--spacing-sm);
             color: var(--color-primary);
         }
 
         .hero-subtitle {
-            font-size: 1.25rem;
+            font-size: 1.125rem; /* RWD調整: 320px 副標略小 */
             color: var(--color-text);
         }
 
         /* 巢狀組合：Hero 區的圖片 */
         .section-hero .hero-image-wrapper {
-            max-width: 300px; /* 手機版圖片尺寸限制 */
+            max-width: 250px; /* RWD調整: 320px 圖片尺寸限制更嚴格 */
             margin: 0 auto;
         }
         
@@ -248,15 +259,17 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: var(--spacing-sm);
+            /* RWD修正：確保項目間距在 320px 不會溢出 */
+            gap: 0.5rem; 
         }
 
         .skill-item {
             background-color: var(--color-primary);
             color: var(--color-text-light);
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 0.75rem; /* RWD修正：內距縮小 */
             border-radius: 4px;
             font-weight: bold;
+            font-size: 0.9rem; /* RWD修正：字體縮小 */
         }
         /* CSS:SKILLS-END */
 
@@ -314,10 +327,13 @@
         }
 
         .contact-item a {
-            font-size: 1.125rem;
+            font-size: 1rem; /* RWD調整: 320px 略小 */
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            /* RWD修正：確保連結文字不會在 320px 溢出 */
+            word-break: break-all; 
+            text-align: left;
         }
         
         /* CSS:CONTACT-END */
@@ -328,23 +344,44 @@
         /* CSS:RWD-START */
         /* 手機優先：Min-width 768px (Tablet/Mid-size Desktop) */
         @media (min-width: 768px) {
+            /* 調整：Container/Nav 的 Padding 恢復正常中等間距 */
             .container {
                 padding-left: var(--spacing-md);
                 padding-right: var(--spacing-md);
             }
-
-            .nav-logo {
-                font-size: 1.5rem;
+            .nav {
+                padding: 0.75rem var(--spacing-md);
             }
-
+            .nav-link {
+                padding: 0.5rem 0.5rem;
+                font-size: 1rem;
+            }
             .nav-links {
                 gap: 1.5rem;
+            }
+            
+            .hero-title {
+                font-size: 3rem;
+            }
+            .hero-subtitle {
+                font-size: 1.5rem;
+            }
+            .section-title {
+                font-size: 2.5rem;
+            }
+            .section-hero .hero-image-wrapper {
+                max-width: 400px;
+            }
+            .skill-item {
+                padding: 0.5rem 1rem;
+                font-size: 1rem;
             }
 
             /* RWD: About 雙欄 */
             .about-content-wrapper {
                 flex-direction: row;
                 text-align: left;
+                align-items: flex-start;
             }
 
             .about-image {
@@ -370,6 +407,9 @@
             
             .project-grid {
                 grid-template-columns: repeat(3, 1fr);
+            }
+            .hero-title {
+                font-size: 4rem;
             }
         }
         /* CSS:RWD-END */
@@ -499,6 +539,7 @@
                 </div>
             </section>
             </main>
+
         <footer>
             <div class="container">
                 <p>&copy; 2025 王小明 · Frontend Dev. All rights reserved.</p>
